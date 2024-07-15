@@ -20,11 +20,13 @@ app.use(passport.initialize())
 //auth middleware
 const localAuthMiddleware= passport.authenticate('local', {session:false})
 
-app.get('/', (req, res)=>{
+app.get('/', (req, res) => {
+    //console.log('User in homepage route:', req.user);
     res.render("home", {
-        user:req.user
+        user: req.user,
     })
 })
+
 
 
 app.use("/user", userRoute)

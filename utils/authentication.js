@@ -12,7 +12,13 @@ function createTokenForUser(user){
 }
 
 function validateToken(token){
-    const payload= JWT.verify(token, process.env.JWT_SECRET)
+    try {
+        const decoded = JWT.verify(token, process.env.JWT_SECRET);
+        return decoded;
+    } catch (error) {
+        //console.error('Invalid token:', error);
+        return undefined;
+    }
 }
 
 export{
