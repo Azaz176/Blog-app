@@ -13,7 +13,6 @@ const userSchema= new mongoose.Schema({
     },
     salt:{
         type:String,
-        required:true
     },
     password:{
         type:String,
@@ -39,6 +38,7 @@ userSchema.pre('save', async function(next){
             //hash password generation
         const salt= await bcrypt.genSalt(8)
             // hash password
+        this.salt= salt
         const hashedPassword= await bcrypt.hash(user.password,salt);
         user.password= hashedPassword
         next()
@@ -47,5 +47,20 @@ userSchema.pre('save', async function(next){
     }
     
 })
+
+
+//Compare login password with original password; extract salt from original and add it to login pass then hash it then compare it
+userSchema.methods.comparePassword= async function(candidatePassword){
+    try {
+        //comapre the provided password with the orginal hashed+salt password
+        const isMatch= await bcrypt.compare(candidatePassword, this.password)
+        return isMatch
+    } catch (error) {
+        throw error
+    }
+  }
+
+
+    
 
 export const User= mongoose.model('User', userSchema)
