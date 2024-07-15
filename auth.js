@@ -16,8 +16,7 @@ passport.use(new LocalStrategy(
       const isRightPassword = await user.comparePassword(password);
       // Check if the password is correct for that user
       if (isRightPassword) {
-        //console.log(user)
-        return done(null, user);
+        return done(null, user)
       }
       else return done(null, false, { msg: "Incorrect password" });
     } catch (error) {

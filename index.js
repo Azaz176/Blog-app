@@ -3,6 +3,8 @@ import path from 'path'
 import userRoute from './routes/user.routes.js'
 import db from './db.js'
 import passport from 'passport'
+import cookieParser from 'cookie-parser'
+import checkForAuthenticationCookie from './middleware/auth.middleware.js'
 const app= express()
 
 
@@ -11,13 +13,17 @@ const PORT= 8000
 app.set('view engine', 'ejs')
 app.set('views', path.resolve("./views") )
 app.use(express.urlencoded({extended:false}))
+app.use(cookieParser())
+app.use(checkForAuthenticationCookie('token'))
 //Now initialize the passport
 app.use(passport.initialize())
 //auth middleware
 const localAuthMiddleware= passport.authenticate('local', {session:false})
 
 app.get('/', (req, res)=>{
-    res.render("home")
+    res.render("home", {
+        user:req.user
+    })
 })
 
 

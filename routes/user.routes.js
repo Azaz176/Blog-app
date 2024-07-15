@@ -1,5 +1,7 @@
 import express from 'express'
 import {User} from '../models/user.models.js'
+import {createTokenForUser, validateToken} from "../utils/authentication.js"
+
 const router= express.Router()
 
 router.get('/signin', (req, res)=>{
@@ -28,9 +30,12 @@ router.post('/signin', async(req, res)=>{
       const user= await User.findOne({email:email})
       
       if(!user || !(await user.comparePassword(password))) 
-      return res.status(401).json({err:"Invalid email and Password"})
+      return res.render("signin",{
+        error:"Incorrect Email or Password"
+    })
       else{
-        return res.status(200).json({...user._doc, password:undefined, salt:undefined}) 
+        const token= createTokenForUser(user)
+        return res.cookie('token', token).redirect("/")
       }
   
     }catch(err){
