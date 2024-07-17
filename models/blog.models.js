@@ -14,10 +14,10 @@ const blogSchema= new Schema({
         required:false
     },
     createdBy:{
-        type:{
+        
             type:Schema.Types.ObjectId,
             ref:"User"
-        }
+        
     }
 }, {timestamps:true})
 
