@@ -1,5 +1,6 @@
 import express from 'express'
 import {Blog} from '../models/blog.models.js'
+import {Comment} from '../models/comment.models.js'
 import multer from 'multer'
 import path from 'path'
 const router= express.Router()
@@ -25,13 +26,25 @@ router.get('/add-new', (req, res)=>{
 
 router.get('/:id',async(req, res)=>{
   const blog= await Blog.findById(req.params.id).populate('createdBy')
-  console.log('blog', blog)
+  const comments= await Comment.find({blogId:req.params.id}).populate('createdBy')
+  //console.log('blog', blog)
   return res.render('blog', {
     user:req.user,
-    blog
+    blog,
+    comments
   })
 
 })
+
+//for comments
+router.post('/comment/:blogId', async (req, res)=>{
+    await Comment.create({
+      content:req.body.content,
+      blogId: req.params.blogId,
+      createdBy: req.user._id
+    })
+    return res.redirect(`/blog/${req.params.blogId}`)
+} )
 
 router.post('/', upload.single('coverImage'), async(req, res)=>{
     const {title, content}= req.body
