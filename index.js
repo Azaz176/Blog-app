@@ -8,10 +8,7 @@ import passport from 'passport'
 import cookieParser from 'cookie-parser'
 import checkForAuthenticationCookie from './middleware/auth.middleware.js'
 const app= express()
-
-
-const PORT= 8000
-
+const PORT= process.env.PORT || 8000
 app.set('view engine', 'ejs')
 app.set('views', path.resolve("./views") )
 app.use(express.urlencoded({extended:false}))
